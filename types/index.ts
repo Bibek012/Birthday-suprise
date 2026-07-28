@@ -19,6 +19,7 @@ export type LocationStatus =
   | "idle"
   | "requesting"
   | "resolving"
+  | "composing"
   | "sending"
   | "success"
   | "denied"
