@@ -1,3 +1,4 @@
+HEAD
 # A Little Surprise For You 💗
 
 A premium, mobile-first birthday surprise site: welcome screen → tap-to-open
@@ -127,3 +128,6 @@ public/
 - `prefers-reduced-motion` is respected globally in `app/globals.css`.
 - Images should be compressed/optimized before adding to `public/photos`
   (aim under ~300KB each) to keep first load fast on mobile networks.
+
+# Birthday-suprise
+ 25811fe20e46d3db8ceebac768a73ff6b6749873
