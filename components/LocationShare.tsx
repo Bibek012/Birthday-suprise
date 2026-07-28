@@ -2,28 +2,18 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { MapPin, CheckCircle2, Loader2, ShieldOff } from "lucide-react";
+import { MapPin, CheckCircle2, Loader2, ShieldOff, Send } from "lucide-react";
 import type { LocationStatus } from "@/types";
 
-async function reverseGeocode(lat: number, lon: number): Promise<string | null> {
-  try {
-    const res = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&zoom=14`,
-      { headers: { Accept: "application/json" } }
-    );
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data?.display_name ?? null;
-  } catch {
-    return null;
-  }
-}
+const WEB3FORMS_ACCESS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY ?? "";
 
 export default function LocationShare() {
   const [status, setStatus] = useState<LocationStatus>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [message, setMessage] = useState("");
+  const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(null);
 
-  async function handleShare() {
+  function requestLocation() {
     if (!("geolocation" in navigator)) {
       setStatus("error");
       setErrorMessage("Your browser doesn't support location sharing.");
@@ -34,24 +24,10 @@ export default function LocationShare() {
     setErrorMessage(null);
 
     navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        setStatus("resolving");
+      (position) => {
         const { latitude, longitude } = position.coords;
-        const address = await reverseGeocode(latitude, longitude);
-
-        setStatus("sending");
-        try {
-          const res = await fetch("/api/location", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ latitude, longitude, address }),
-          });
-          if (!res.ok) throw new Error("Request failed");
-          setStatus("success");
-        } catch {
-          setStatus("error");
-          setErrorMessage("Couldn't save your location right now. Please try again later.");
-        }
+        setCoords({ lat: latitude, lon: longitude });
+        setStatus("composing");
       },
       (err) => {
         if (err.code === err.PERMISSION_DENIED) {
@@ -63,6 +39,35 @@ export default function LocationShare() {
       },
       { enableHighAccuracy: false, timeout: 10000, maximumAge: 0 }
     );
+  }
+
+  async function handleSend() {
+    if (!coords || !message.trim()) return;
+
+    setStatus("sending");
+    setErrorMessage(null);
+
+    try {
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          subject: "New message for Bibek",
+          message,
+          latitude: coords.lat,
+          longitude: coords.lon,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error("Request failed");
+
+      setStatus("success");
+    } catch {
+      setStatus("error");
+      setErrorMessage("Couldn't send your message right now. Please try again later.");
+    }
   }
 
   return (
@@ -81,40 +86,72 @@ export default function LocationShare() {
         One optional thing
       </h4>
       <p className="mt-2 font-body text-sm leading-relaxed text-plum-800/70">
-        Would you like to share your location? This helps personalize your
-        birthday experience. It's entirely optional — the surprise works
-        exactly the same either way.
+        Want to leave a little note? We'll just need your location to send
+        it along.
       </p>
 
       {status === "idle" && (
         <button
-          onClick={handleShare}
+          onClick={requestLocation}
           className="mt-5 rounded-full bg-rose-600 px-6 py-2.5 font-body text-sm font-semibold text-white shadow-md shadow-rose-300/50 transition active:scale-95"
         >
-          Share My Location
+          Send message to Bibek
         </button>
       )}
 
-      {(status === "requesting" || status === "resolving" || status === "sending") && (
+      {status === "requesting" && (
         <div className="mt-5 flex items-center justify-center gap-2 font-body text-sm text-plum-800/60">
           <Loader2 size={16} className="animate-spin" />
-          {status === "requesting" && "Waiting for permission..."}
-          {status === "resolving" && "Finding your city..."}
-          {status === "sending" && "Sharing securely..."}
+          Waiting for permission...
+        </div>
+      )}
+
+      {status === "composing" && (
+        <div className="mt-5 flex flex-col items-stretch gap-3">
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Type your message for Bibek..."
+            rows={4}
+            className="w-full resize-none rounded-2xl border border-rose-200 bg-white px-4 py-3 font-body text-sm text-plum-900 placeholder:text-plum-800/40 focus:border-rose-400 focus:outline-none"
+          />
+          <button
+            onClick={handleSend}
+            disabled={!message.trim()}
+            className="flex items-center justify-center gap-2 rounded-full bg-rose-600 px-6 py-2.5 font-body text-sm font-semibold text-white shadow-md shadow-rose-300/50 transition active:scale-95 disabled:opacity-40 disabled:active:scale-100"
+          >
+            <Send size={16} />
+            Send
+          </button>
+        </div>
+      )}
+
+      {status === "sending" && (
+        <div className="mt-5 flex items-center justify-center gap-2 font-body text-sm text-plum-800/60">
+          <Loader2 size={16} className="animate-spin" />
+          Sending securely...
         </div>
       )}
 
       {status === "success" && (
         <div className="mt-5 flex items-center justify-center gap-2 font-body text-sm font-medium text-rose-600">
           <CheckCircle2 size={17} />
-          Thank you! Your location was shared.
+          Message sent! Thank you.
         </div>
       )}
 
       {status === "denied" && (
-        <div className="mt-5 flex items-center justify-center gap-2 font-body text-sm text-plum-800/50">
-          <ShieldOff size={16} />
-          No worries — enjoy the surprise as is.
+        <div className="mt-5 flex flex-col items-center gap-3">
+          <div className="flex items-center justify-center gap-2 font-body text-sm text-plum-800/50">
+            <ShieldOff size={16} />
+            Location permission was denied.
+          </div>
+          <button
+            onClick={requestLocation}
+            className="rounded-full border border-rose-300 px-5 py-2 font-body text-xs font-semibold text-rose-600 transition active:scale-95"
+          >
+            Allow & try again
+          </button>
         </div>
       )}
 
@@ -124,7 +161,7 @@ export default function LocationShare() {
             {errorMessage ?? "Something went wrong."}
           </p>
           <button
-            onClick={handleShare}
+            onClick={coords ? handleSend : requestLocation}
             className="mt-3 rounded-full border border-rose-300 px-5 py-2 font-body text-xs font-semibold text-rose-600 transition active:scale-95"
           >
             Try again
@@ -133,8 +170,8 @@ export default function LocationShare() {
       )}
 
       <p className="mt-4 font-body text-[11px] leading-relaxed text-plum-800/40">
-        Only your coordinates and approximate address are stored, with a
-        timestamp — nothing else, and only if you say yes.
+        Only your coordinates and your message are shared, and only after
+        you say yes.
       </p>
     </motion.div>
   );
