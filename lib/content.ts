@@ -4,7 +4,7 @@ import type { GalleryPhoto, TimelineEntry } from "@/types";
 // EDIT ME: this is the one file you need to touch to personalize the site.
 // ---------------------------------------------------------------------------
 
-export const RECIPIENT_NAME = "Ananya";
+export const RECIPIENT_NAME = "Riya";
 
 export const WELCOME_SUBLINE = "Someone made you something. Tap in when you're ready.";
 
@@ -12,9 +12,9 @@ export const HERO_MESSAGE =
   "Another year of your laugh, your chaos, and the way you make ordinary days feel like plot twists worth living for.";
 
 export const ROMANTIC_MESSAGES: string[] = [
-  "You have a way of turning Tuesdays into main character moments.",
-  "I keep every voice note. Even the ones where you're just narrating your lunch.",
-  "If today is any indication of the year ahead, we're all in trouble — the good kind.",
+  "Careful... you're getting more gorgeous every birthday. At this rate, the world won't be able to handle you.",
+  "Tomar voice ta eto mishti, mone hoy roshogolla-o tomar kache har mene jabe.",
+  "I got lost in your eyes... and honestly, I don't want directions back.",
 ];
 
 export const TIMELINE: TimelineEntry[] = [
