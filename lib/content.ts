@@ -41,10 +41,10 @@ export const TIMELINE: TimelineEntry[] = [
 // Drop photo files into /public/photos and list them here in order.
 // Using placeholder gradients until real photos are added.
 export const GALLERY: GalleryPhoto[] = [
-  { src: "/photos/photo-1.jpg", caption: "That afternoon we got lost on purpose" },
-  { src: "/photos/photo-2.jpg", caption: "Your laugh, mid-sentence, as usual" },
-  { src: "/photos/photo-3.jpg", caption: "The trip we still talk about" },
-  { src: "/photos/photo-4.jpg", caption: "A very normal Tuesday, somehow iconic" },
+  { src: "/photos/photo-1.jpg", caption: "How beautiful is your Eyes" },
+  { src: "/photos/photo-2.jpg", caption: "Tera Dhyan kidhar hai, Tera hero Idhar hai😎" },
+  { src: "/photos/photo-3.jpg", caption: "Pinks looks so preety on you🩷" },
+  { src: "/photos/photo-4.jpg", caption: "Hehe Selfie 😚" },
 ];
 
 // Background music — drop an mp3 into /public/music and update the path.
