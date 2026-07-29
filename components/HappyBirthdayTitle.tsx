@@ -14,8 +14,7 @@ function AnimatedWord({ word, delayBase }: { word: string; delayBase: number }) 
           key={i}
           className="inline-block"
           initial={{ y: "110%", opacity: 0, rotate: 6 }}
-          whileInView={{ y: "0%", opacity: 1, rotate: 0 }}
-          viewport={{ once: true, margin: "-10%" }}
+          animate={{ y: "0%", opacity: 1, rotate: 0 }}
           transition={{
             delay: delayBase + i * 0.045,
             duration: 0.7,
