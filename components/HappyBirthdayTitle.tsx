@@ -41,7 +41,8 @@ export default function HappyBirthdayTitle() {
       </motion.span>
 
       <h2 className="font-display text-5xl font-extrabold leading-[1.05] text-plum-900 xs:text-6xl">
-        <AnimatedWord word={LINE_ONE} delayBase={0.1} />
+
+        <span className="bg-gradient-to-r from-rose-600 via-rose-500 to-gold-500 bg-clip-text text-transparent"><AnimatedWord word={LINE_ONE} delayBase={0.1} /></span>
         <br />
         <span className="bg-gradient-to-r from-rose-600 via-rose-500 to-gold-500 bg-clip-text text-transparent">
           <AnimatedWord word={LINE_TWO} delayBase={0.4} />
